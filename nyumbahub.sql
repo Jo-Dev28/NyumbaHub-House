@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: May 27, 2026 at 11:31 PM
+-- Generation Time: May 28, 2026 at 01:22 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -153,13 +153,6 @@ CREATE TABLE `favorites` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Dumping data for table `favorites`
---
-
-INSERT INTO `favorites` (`id`, `user_id`, `property_id`, `created_at`) VALUES
-(6, 2, 2, '2026-05-27 21:23:12');
-
 -- --------------------------------------------------------
 
 --
@@ -259,7 +252,9 @@ INSERT INTO `phone_views` (`id`, `property_id`, `user_id`, `ip_address`, `viewed
 (9, 2, 2, '::1', '2026-05-27 21:22:54'),
 (10, 2, 2, '::1', '2026-05-27 21:22:54'),
 (11, 2, 2, '::1', '2026-05-27 21:22:54'),
-(12, 2, 2, '::1', '2026-05-27 21:22:56');
+(12, 2, 2, '::1', '2026-05-27 21:22:56'),
+(13, 2, 2, '::1', '2026-05-28 11:00:13'),
+(14, 2, 1, '::1', '2026-05-28 11:02:18');
 
 -- --------------------------------------------------------
 
@@ -315,7 +310,19 @@ CREATE TABLE `properties` (
 --
 
 INSERT INTO `properties` (`id`, `owner_id`, `title`, `slug`, `property_type`, `category`, `price_rent`, `price_sale`, `service_charge`, `county_id`, `town_id`, `estate`, `street`, `bedrooms`, `bathrooms`, `parking_slots`, `square_feet`, `description`, `water_available`, `electricity_available`, `wifi_available`, `security_available`, `cctv`, `borehole`, `swimming_pool`, `gym`, `backup_generator`, `balcony`, `furnished`, `pets_allowed`, `listing_package`, `listing_expiry`, `is_featured`, `is_verified`, `status`, `views_count`, `latitude`, `longitude`, `created_at`, `updated_at`) VALUES
-(2, 1, 'Spacious 2 Bedroom Apartment', 'spacious-2-bedroom-apartment-1779914090', 'apartment', 'rent', 26000.00, NULL, 500.00, 1, 551, 'Highrise', 'Mbagathi way', 2, 1, 2, NULL, 'A very good two bedroom apartment at highrise estate, and also affordable📞', 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 'basic', '2026-06-26', 1, 0, 'approved', 7, NULL, NULL, '2026-05-27 20:34:50', '2026-05-27 21:22:50');
+(2, 1, 'Spacious 2 Bedroom Apartment', 'spacious-2-bedroom-apartment-1779914090', 'apartment', 'rent', 26000.00, NULL, 500.00, 1, 551, 'Highrise', 'Mbagathi way', 2, 1, 2, NULL, 'A very good two bedroom apartment at highrise estate, and also affordable📞', 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 1, 1, 'basic', '2026-06-26', 0, 0, 'approved', 24, NULL, NULL, '2026-05-27 20:34:50', '2026-05-28 11:09:31'),
+(3, 1, 'Luxury 5-Bedroom Villa with Pool in Karen', 'luxury-5-bedroom-villa-karen', 'house', 'sale', NULL, 45000000.00, 15000.00, 1, 3, 'Karen', 'Karen Road', 5, 5, 4, 450, 'Stunning luxury villa located in the prestigious Karen area. Features include a large swimming pool, beautifully landscaped garden, modern kitchen with granite countertops, master ensuite with walk-in closet, servant quarters, and solar water heating. The property offers 24/7 security and is close to international schools and shopping malls.', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'vip', '2026-08-26', 1, 1, 'approved', 45, NULL, NULL, '2026-05-13 11:17:53', '2026-05-28 11:17:53'),
+(4, 1, 'Spacious 3-Bedroom Apartment in Kilimani', 'spacious-3-bedroom-apartment-kilimani', 'apartment', 'rent', 120000.00, NULL, 5000.00, 1, 4, 'Kilimani', 'Elgeyo Marakwet Road', 3, 3, 2, 180, 'Beautifully furnished 3-bedroom apartment in the heart of Kilimani. Features include spacious living room, modern kitchen with fitted cabinets, balcony with city views, and 24/7 security. Close to Yaya Centre, restaurants, and entertainment spots.', 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 'premium', '2026-07-27', 1, 1, 'approved', 78, NULL, NULL, '2026-05-08 11:17:53', '2026-05-28 11:17:53'),
+(5, 1, 'Beachfront Villa in Nyali, Mombasa', 'beachfront-villa-nyali-mombasa', 'house', 'sale', NULL, 65000000.00, 20000.00, 2, 7, 'Nyali', 'Beach Road', 4, 4, 3, 350, 'Exclusive beachfront villa with direct access to the Indian Ocean. Features include ocean view terrace, private swimming pool, modern finishes, and 24/7 security. Perfect for vacation home or luxury rental investment.', 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 'vip', '2026-08-26', 1, 1, 'approved', 32, NULL, NULL, '2026-05-18 11:17:53', '2026-05-28 11:17:53'),
+(6, 1, 'Clean Bedsitter in Milimani, Kisumu', 'clean-bedsitter-milimani-kisumu', 'bedsitter', 'rent', 15000.00, NULL, 500.00, 3, 11, 'Milimani', 'Kisumu Road', 1, 1, 1, 250, 'Well-maintained bedsitter in a secure compound in Milimani. Features include tiled floors, secure parking, water heater, and CCTV cameras. Close to the CBD and shopping centers.', 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 1, 1, 'basic', '2026-06-27', 0, 1, 'approved', 56, NULL, NULL, '2026-05-03 11:17:53', '2026-05-28 11:17:53'),
+(7, 1, 'Commercial Office Space in Nakuru CBD', 'commercial-office-space-nakuru-cbd', 'commercial', 'rent', 80000.00, NULL, 3000.00, 4, 13, 'Nakuru CBD', 'Kenyatta Avenue', 0, 2, 5, 500, 'Prime commercial office space located in Nakuru CBD. Features include reception area, 2 private offices, open plan workspace, kitchenette, and secure parking. Perfect for corporate offices.', 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 'premium', '2026-07-27', 1, 1, 'approved', 24, NULL, NULL, '2026-05-23 11:17:53', '2026-05-28 11:18:13'),
+(8, 1, 'Prime Land for Sale in Ruaka, Kiambu', 'prime-land-for-sale-ruaka-kiambu', 'land', 'sale', NULL, 8500000.00, NULL, 5, 18, 'Ruaka', 'Ruaka Road', 0, 0, 0, 10000, '1/4 acre plot of prime land located in the fast-growing Ruaka area. Close to major roads, shopping centers, and schools. Title deed available, ready for development. Perfect for residential or commercial development.', 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 'basic', '2026-06-27', 1, 1, 'approved', 41, NULL, NULL, '2026-05-16 11:17:53', '2026-05-28 11:17:53'),
+(9, 1, 'Modern Studio Apartment in Westlands', 'modern-studio-apartment-westlands', 'apartment', 'rent', 35000.00, NULL, 2000.00, 1, 2, 'Westlands', 'Waiyaki Way', 1, 1, 1, 400, 'Fully furnished studio apartment in the heart of Westlands. Walking distance to Sarit Centre, restaurants, and entertainment spots. Includes gym access and rooftop terrace.', 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 'premium', '2026-07-27', 1, 1, 'approved', 89, NULL, NULL, '2026-05-10 11:17:53', '2026-05-28 11:17:53'),
+(10, 1, 'Luxury Beach Cottage in Diani', 'luxury-beach-cottage-diani', 'house', 'airbnb', 12000.00, NULL, 1000.00, 2, 9, 'Diani', 'Diani Beach Road', 2, 2, 2, 1200, 'Beautiful beach cottage located just 200 meters from Diani Beach. Perfect for vacation rentals, fully furnished with modern amenities, private garden, and outdoor shower.', 1, 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 1, 'vip', '2026-08-26', 1, 1, 'approved', 67, NULL, NULL, '2026-05-20 11:17:53', '2026-05-28 11:17:53'),
+(11, 1, 'Elegant 4-Bedroom Townhouse in Runda', 'elegant-4-bedroom-townhouse-runda', 'house', 'sale', NULL, 35000000.00, 10000.00, 1, 5, 'Runda', 'Runda Drive', 4, 4, 3, 300, 'Elegant townhouse in the prestigious Runda estate. Features include spacious bedrooms, modern kitchen, private garden, and community amenities. Close to international schools and shopping centers.', 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 'premium', '2026-07-27', 1, 1, 'approved', 34, NULL, NULL, '2026-05-06 11:17:53', '2026-05-28 11:17:53'),
+(12, 1, 'Affordable Single Room in Hostel - CBD', 'affordable-single-room-hostel-cbd', 'single_room', 'rent', 8000.00, NULL, 0.00, 1, 1, 'CBD', 'Moi Avenue', 1, 1, 0, 100, 'Budget-friendly single room in a secure hostel located in Nairobi CBD. Shared bathroom facilities, 24/7 security, and close to all amenities. Perfect for students and young professionals.', 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 'basic', '2026-06-27', 0, 0, 'approved', 112, NULL, NULL, '2026-05-23 11:17:53', '2026-05-28 11:17:53'),
+(13, 1, 'Spacious 3-Bedroom House in Lang\'ata', 'spacious-3-bedroom-house-langata', 'house', 'rent', 85000.00, NULL, 3000.00, 1, 521, 'Lang\'ata', 'Lang\'ata Road', 3, 2, 2, 200, 'Beautiful family home in a quiet Lang\'ata neighborhood. Large garden, ample parking, and close to schools and shopping centers. Features include tiled floors, modern kitchen, and security system.', 1, 1, 1, 1, 1, 0, 0, 0, 1, 1, 0, 1, 'premium', '2026-07-27', 0, 1, 'approved', 67, NULL, NULL, '2026-04-28 11:17:53', '2026-05-28 11:17:53'),
+(14, 1, 'Luxury Penthouse with City Views', 'luxury-penthouse-city-views', 'apartment', 'rent', 250000.00, NULL, 10000.00, 1, 2, 'Westlands', 'Woodvale Grove', 3, 3, 2, 250, 'Exclusive penthouse with panoramic city views. Features include floor-to-ceiling windows, private rooftop terrace, modern finishes, and high-end appliances. Includes dedicated parking and 24/7 concierge.', 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 'vip', '2026-08-26', 1, 1, 'approved', 45, NULL, NULL, '2026-05-14 11:17:53', '2026-05-28 11:17:53');
 
 -- --------------------------------------------------------
 
@@ -1064,7 +1071,7 @@ CREATE TABLE `users` (
   `instagram_link` varchar(255) DEFAULT NULL,
   `last_login` timestamp NULL DEFAULT NULL,
   `profile_image` varchar(255) DEFAULT 'default-avatar.png',
-  `user_type` enum('owner','admin') DEFAULT 'owner',
+  `user_type` enum('user','admin','super_admin') DEFAULT 'user',
   `role` enum('user','admin','super_admin') DEFAULT 'user',
   `is_verified` tinyint(1) DEFAULT 0,
   `verification_badge` tinyint(1) DEFAULT 0,
@@ -1080,8 +1087,9 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `full_name`, `email`, `password`, `phone`, `bio`, `facebook_link`, `twitter_link`, `instagram_link`, `last_login`, `profile_image`, `user_type`, `role`, `is_verified`, `verification_badge`, `subscription_plan`, `subscription_expiry`, `created_at`, `updated_at`, `status`) VALUES
-(1, 'Jonathan Bosimwenda', 'josbosimwenda@gmail.com', '$2y$10$otK2H6dTCuhgFqviRybLie8dKqyrjqOBTsIN/IOFi4Kj2rCxjN0AC', '0851600109', 'HEY I AM JONATHA N BOSIMWENDA', '', '', '', '2026-05-27 21:11:33', '1779906934_1.png', 'owner', 'user', 0, 0, 'silver', '2026-06-26', '2026-05-27 17:53:46', '2026-05-27 21:11:33', 'active'),
-(2, 'John Bosi', 'Asantedivine55@gmail.com', '$2y$10$zdYME0WSYeBt6mAliMm0G.pl4FrPFXD6WxYXC2fw/2zuvqKyTNu5G', '0851600109', NULL, NULL, NULL, NULL, '2026-05-27 21:15:09', '1779915663_2.jpeg', 'owner', 'admin', 0, 0, 'bronze', NULL, '2026-05-27 20:23:44', '2026-05-27 21:15:09', 'active');
+(1, 'Jonathan Bosimwenda', 'josbosimwenda@gmail.com', '$2y$10$otK2H6dTCuhgFqviRybLie8dKqyrjqOBTsIN/IOFi4Kj2rCxjN0AC', '0851600109', 'HEY I AM JONATHA N BOSIMWENDA', '', '', '', '2026-05-28 11:21:04', '1779906934_1.png', 'super_admin', 'admin', 0, 0, 'silver', '2026-06-26', '2026-05-27 17:53:46', '2026-05-28 11:21:04', 'active'),
+(2, 'John Bosi', 'Asantedivine55@gmail.com', '$2y$10$zdYME0WSYeBt6mAliMm0G.pl4FrPFXD6WxYXC2fw/2zuvqKyTNu5G', '0851600109', NULL, NULL, NULL, NULL, '2026-05-28 11:19:57', '1779915663_2.jpeg', 'admin', 'super_admin', 0, 0, 'bronze', NULL, '2026-05-27 20:23:44', '2026-05-28 11:19:57', 'active'),
+(3, 'Admin User', 'admin@nyumbahub.com', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '+254711223344', 'System Administrator', NULL, NULL, NULL, NULL, 'default-avatar.png', '', 'super_admin', 1, 1, 'gold', '2027-05-28', '2026-05-28 11:12:39', '2026-05-28 11:12:39', 'active');
 
 --
 -- Indexes for dumped tables
@@ -1261,7 +1269,7 @@ ALTER TABLE `counties`
 -- AUTO_INCREMENT for table `favorites`
 --
 ALTER TABLE `favorites`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT for table `messages`
@@ -1285,13 +1293,13 @@ ALTER TABLE `payments`
 -- AUTO_INCREMENT for table `phone_views`
 --
 ALTER TABLE `phone_views`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `properties`
 --
 ALTER TABLE `properties`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT for table `property_documents`
@@ -1351,7 +1359,7 @@ ALTER TABLE `towns`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- Constraints for dumped tables

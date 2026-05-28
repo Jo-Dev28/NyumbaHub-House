@@ -9,10 +9,16 @@ if(!isset($user)) {
         'full_name' => $_SESSION['user_name'] ?? 'User',
         'email' => $_SESSION['user_email'] ?? '',
         'profile_image' => 'default-avatar.png',
-        'user_type' => 'owner',
+        'role' => $_SESSION['user_role'] ?? 'user',
         'subscription_plan' => 'bronze'
     ];
 }
+
+// Get user role
+$user_role = $user['role'] ?? $_SESSION['user_role'] ?? 'user';
+$is_admin = ($user_role == 'admin');
+$is_super_admin = ($user_role == 'super_admin');
+$is_regular_user = (!$is_admin && !$is_super_admin);
 ?>
 
 <div class="card border-0 shadow-sm rounded-4">
@@ -27,49 +33,105 @@ if(!isset($user)) {
         <h5 class="mb-1"><?php echo htmlspecialchars($user['full_name'] ?? 'User'); ?></h5>
         <p class="text-muted small mb-2"><?php echo htmlspecialchars($user['email'] ?? ''); ?></p>
         <div class="mb-3">
-            <?php 
-            $plan = $user['subscription_plan'] ?? 'bronze';
-            $planClass = $plan == 'gold' ? 'warning' : ($plan == 'silver' ? 'secondary' : 'secondary');
-            ?>
-            <span class="badge bg-<?php echo $planClass; ?>">
-                <i class="fas fa-crown"></i> <?php echo ucfirst($plan); ?> Plan
-            </span>
+            <?php if($is_super_admin): ?>
+                <span class="badge bg-danger">
+                    <i class="fas fa-shield-alt"></i> Super Admin
+                </span>
+            <?php elseif($is_admin): ?>
+                <span class="badge bg-primary">
+                    <i class="fas fa-home"></i> Property Owner
+                </span>
+            <?php else: ?>
+                <span class="badge bg-secondary">
+                    <i class="fas fa-user"></i> Property Seeker
+                </span>
+            <?php endif; ?>
         </div>
         <hr>
         <div class="d-grid gap-2">
             <a href="profile.php" class="btn btn-outline-primary btn-sm">
                 <i class="fas fa-user-edit"></i> Edit Profile
             </a>
-            <a href="add-property.php" class="btn btn-primary btn-sm">
-                <i class="fas fa-plus-circle"></i> Add Property
-            </a>
+            <?php if($is_admin || $is_super_admin): ?>
+                <a href="add-property.php" class="btn btn-primary btn-sm">
+                    <i class="fas fa-plus-circle"></i> Add Property
+                </a>
+            <?php endif; ?>
         </div>
     </div>
 </div>
 
 <div class="card border-0 shadow-sm rounded-4 mt-4">
     <div class="list-group list-group-flush">
-        <a href="<?php echo SITE_URL; ?>dashboard.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : ''; ?>">
-            <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+        
+        <!-- DASHBOARD - Different for each role -->
+        <?php if($is_regular_user): ?>
+            <a href="<?php echo SITE_URL; ?>buyer-dashboard.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'buyer-dashboard.php' ? 'active' : ''; ?>">
+                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+            </a>
+        <?php else: ?>
+            <a href="<?php echo SITE_URL; ?>dashboard.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'active' : ''; ?>">
+                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+            </a>
+        <?php endif; ?>
+        
+        <!-- BROWSE PROPERTIES - Everyone -->
+        <a href="<?php echo SITE_URL; ?>properties.php" class="list-group-item list-group-item-action">
+            <i class="fas fa-search me-2"></i> Browse Properties
         </a>
-        <a href="<?php echo SITE_URL; ?>my-properties.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'my-properties.php' ? 'active' : ''; ?>">
-            <i class="fas fa-home me-2"></i> My Properties
-            <?php
-            if(isset($_SESSION['user_id'])) {
-                $stmt = $GLOBALS['pdo']->prepare("SELECT COUNT(*) as count FROM properties WHERE owner_id = ? AND status = 'pending_approval'");
-                $stmt->execute([$_SESSION['user_id']]);
-                $pending = $stmt->fetch()['count'];
-                if($pending > 0) {
-                    echo '<span class="badge bg-warning float-end">' . $pending . '</span>';
+        
+        <!-- REGULAR USER ONLY MENU (Property Seeker) -->
+        <?php if($is_regular_user): ?>
+            <!-- Favorites -->
+            <a href="<?php echo SITE_URL; ?>favorites.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'favorites.php' ? 'active' : ''; ?>">
+                <i class="fas fa-heart me-2"></i> My Favorites
+            </a>
+            
+            <!-- My Inquiries -->
+            <a href="<?php echo SITE_URL; ?>my-inquiries.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'my-inquiries.php' ? 'active' : ''; ?>">
+                <i class="fas fa-envelope me-2"></i> My Inquiries
+            </a>
+            
+        <?php endif; ?>
+        
+        <!-- ADMIN & SUPER ADMIN ONLY MENU (Property Owner) -->
+        <?php if($is_admin || $is_super_admin): ?>
+            <!-- My Properties -->
+            <a href="<?php echo SITE_URL; ?>my-properties.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'my-properties.php' ? 'active' : ''; ?>">
+                <i class="fas fa-home me-2"></i> My Properties
+                <?php
+                if(isset($_SESSION['user_id'])) {
+                    $stmt = $GLOBALS['pdo']->prepare("SELECT COUNT(*) as count FROM properties WHERE owner_id = ? AND status = 'pending_approval'");
+                    $stmt->execute([$_SESSION['user_id']]);
+                    $pending = $stmt->fetch()['count'];
+                    if($pending > 0) {
+                        echo '<span class="badge bg-warning float-end">' . $pending . '</span>';
+                    }
                 }
-            }
-            ?>
-        </a>
-        <a href="<?php echo SITE_URL; ?>favorites.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'favorites.php' ? 'active' : ''; ?>">
-            <i class="fas fa-heart me-2"></i> Favorites
-        </a>
+                ?>
+            </a>
+            
+            <!-- Add Property -->
+            <a href="<?php echo SITE_URL; ?>add-property.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'add-property.php' ? 'active' : ''; ?>">
+                <i class="fas fa-plus-circle me-2"></i> Add Property
+            </a>
+            
+            <!-- Subscription (Only for Admin, not Super Admin) -->
+            <?php if($is_admin): ?>
+            <a href="<?php echo SITE_URL; ?>subscription.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'subscription.php' ? 'active' : ''; ?>">
+                <i class="fas fa-crown me-2"></i> Subscription
+            </a>
+            <?php endif; ?>
+            
+            <!-- Payments -->
+            <a href="<?php echo SITE_URL; ?>payments.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'payments.php' ? 'active' : ''; ?>">
+                <i class="fas fa-credit-card me-2"></i> Payments
+            </a>
+        <?php endif; ?>
+        
+        <!-- MESSAGES - Everyone -->
         <a href="<?php echo SITE_URL; ?>messages.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'messages.php' ? 'active' : ''; ?>">
-            <i class="fas fa-envelope me-2"></i> Messages
+            <i class="fas fa-comment-dots me-2"></i> Messages
             <?php
             if(isset($_SESSION['user_id'])) {
                 $stmt = $GLOBALS['pdo']->prepare("SELECT COUNT(*) as count FROM messages WHERE receiver_id = ? AND is_read = 0");
@@ -80,18 +142,25 @@ if(!isset($user)) {
                 <?php endif;
             } ?>
         </a>
-        <a href="<?php echo SITE_URL; ?>subscription.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'subscription.php' ? 'active' : ''; ?>">
-            <i class="fas fa-crown me-2"></i> Subscription
-        </a>
-        <a href="<?php echo SITE_URL; ?>payments.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'payments.php' ? 'active' : ''; ?>">
-            <i class="fas fa-credit-card me-2"></i> Payments History
-        </a>
+        
+        <!-- SETTINGS / PROFILE - Everyone -->
         <a href="<?php echo SITE_URL; ?>profile.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'active' : ''; ?>">
             <i class="fas fa-cog me-2"></i> Settings
         </a>
+        
+        <!-- SUPER ADMIN ONLY - Admin Panel Link -->
+        <?php if($is_super_admin): ?>
+            <a href="<?php echo SITE_URL; ?>admin/dashboard.php" class="list-group-item list-group-item-action">
+                <i class="fas fa-shield-alt me-2"></i> Admin Panel
+                <span class="badge bg-danger float-end">Super</span>
+            </a>
+        <?php endif; ?>
+        
+        <!-- LOGOUT - Everyone -->
         <a href="<?php echo SITE_URL; ?>logout.php" class="list-group-item list-group-item-action text-danger">
             <i class="fas fa-sign-out-alt me-2"></i> Logout
         </a>
+        
     </div>
 </div>
 

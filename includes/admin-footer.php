@@ -44,7 +44,18 @@ function confirmDelete(url, message) {
         }
     });
 }
+
+// Auto-hide alerts
+setTimeout(function() {
+    $('.alert').fadeOut('slow');
+}, 5000);
 </script>
 
 </body>
 </html>
+<?php
+// End output buffering and flush
+if (ob_get_level() > 0) {
+    ob_end_flush();
+}
+?>

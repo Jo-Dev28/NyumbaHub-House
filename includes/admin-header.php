@@ -1,8 +1,17 @@
 <?php
+// Start output buffering if not already started
+if (ob_get_level() == 0) {
+    ob_start();
+}
+
 if(!isset($_SESSION)) session_start();
 
 // Check if user is logged in and is admin
 if(!isset($_SESSION['user_id']) || ($_SESSION['user_role'] != 'admin' && $_SESSION['user_role'] != 'super_admin')) {
+    // Clean buffer before redirect
+    while (ob_get_level() > 0) {
+        ob_end_clean();
+    }
     header("Location: ../login.php");
     exit();
 }

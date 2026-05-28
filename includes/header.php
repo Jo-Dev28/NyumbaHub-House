@@ -7,8 +7,11 @@ if(isLoggedIn() && isset($_SESSION['user_id'])) {
     $loggedInUser = getUserById($_SESSION['user_id']);
 }
 
-// Check if user is admin
-$isAdmin = isset($_SESSION['user_role']) && ($_SESSION['user_role'] == 'admin' || $_SESSION['user_role'] == 'super_admin');
+// Check user role
+$user_role = isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'user';
+$is_admin = ($user_role == 'admin');
+$is_super_admin = ($user_role == 'super_admin');
+$is_regular_user = (!$is_admin && !$is_super_admin);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -137,8 +140,30 @@ $isAdmin = isset($_SESSION['user_role']) && ($_SESSION['user_role'] == 'admin' |
             margin: 0.5rem 0;
         }
         
-        /* Admin Badge */
+        /* Role Badges */
+        .user-badge {
+            background: linear-gradient(135deg, #0d6efd, #0dcaf0);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        
         .admin-badge {
+            background: linear-gradient(135deg, #28a745, #20c997);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 600;
+            margin-left: 8px;
+            vertical-align: middle;
+        }
+        
+        .super-badge {
             background: linear-gradient(135deg, #dc3545, #ff6b6b);
             color: white;
             padding: 2px 8px;
@@ -213,17 +238,6 @@ $isAdmin = isset($_SESSION['user_role']) && ($_SESSION['user_role'] == 'admin' |
             background: var(--primary);
             color: white;
             transform: translateY(-2px);
-        }
-        
-        /* Admin Nav Link Special */
-        .admin-nav-link {
-            background: rgba(220,53,69,0.1);
-            color: #dc3545;
-        }
-        
-        .admin-nav-link:hover {
-            background: #dc3545;
-            color: white;
         }
         
         /* Spacer */
@@ -367,36 +381,48 @@ $isAdmin = isset($_SESSION['user_role']) && ($_SESSION['user_role'] == 'admin' |
                                 <img src="<?php echo SITE_URL . 'uploads/profiles/' . $profileImg; ?>" class="user-avatar" alt="Avatar">
                                 <span class="user-name">
                                     <?php echo htmlspecialchars($_SESSION['user_name'] ?? 'User'); ?>
-                                    <?php if($isAdmin): ?>
-                                        <span class="admin-badge">Admin</span>
+                                    <?php if($is_super_admin): ?>
+                                        <span class="super-badge"><i class="fas fa-shield-alt"></i> Super Admin</span>
+                                    <?php elseif($is_admin): ?>
+                                        <span class="admin-badge"><i class="fas fa-home"></i> Owner</span>
+                                    <?php else: ?>
+                                        <span class="user-badge"><i class="fas fa-user"></i> Seeker</span>
                                     <?php endif; ?>
                                 </span>
                                 <i class="fas fa-chevron-down" style="font-size: 0.8rem;"></i>
                             </div>
                             <ul class="dropdown-menu dropdown-menu-end">
-                                <?php if($isAdmin): ?>
-                                    <!-- Admin Menu Items -->
+                                <!-- SUPER ADMIN ONLY -->
+                                <?php if($is_super_admin): ?>
                                     <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>admin/dashboard.php">
-                                        <i class="fas fa-tachometer-alt"></i> Admin Panel
+                                        <i class="fas fa-shield-alt"></i> Admin Panel
                                     </a></li>
                                     <li><hr class="dropdown-divider"></li>
                                 <?php endif; ?>
-                                <!-- User Menu Items -->
-                                <?php if(!$isAdmin): ?>
+                                
+                                <!-- REGULAR USER (Property Seeker) Menu -->
+                                <?php if($is_regular_user): ?>
+                                    <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>buyer-dashboard.php">
+                                        <i class="fas fa-tachometer-alt"></i> Dashboard
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>favorites.php">
+                                        <i class="fas fa-heart"></i> Favorites
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>my-inquiries.php">
+                                        <i class="fas fa-envelope"></i> My Inquiries
+                                    </a></li>
+                                <?php endif; ?>
+                                
+                                <!-- ADMIN (Property Owner) Menu -->
+                                <?php if($is_admin): ?>
                                     <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>dashboard.php">
                                         <i class="fas fa-tachometer-alt"></i> Dashboard
                                     </a></li>
                                     <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>my-properties.php">
                                         <i class="fas fa-home"></i> My Properties
                                     </a></li>
-                                    <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>favorites.php">
-                                        <i class="fas fa-heart"></i> Favorites
-                                    </a></li>
-                                    <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>messages.php">
-                                        <i class="fas fa-comment-dots"></i> Messages
-                                    </a></li>
-                                    <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>profile.php">
-                                        <i class="fas fa-user-edit"></i> Profile
+                                    <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>add-property.php">
+                                        <i class="fas fa-plus-circle"></i> Add Property
                                     </a></li>
                                     <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>subscription.php">
                                         <i class="fas fa-crown"></i> Subscription
@@ -405,6 +431,30 @@ $isAdmin = isset($_SESSION['user_role']) && ($_SESSION['user_role'] == 'admin' |
                                         <i class="fas fa-credit-card"></i> Payments
                                     </a></li>
                                 <?php endif; ?>
+                                
+                                <!-- SUPER ADMIN also gets these -->
+                                <?php if($is_super_admin): ?>
+                                    <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>dashboard.php">
+                                        <i class="fas fa-tachometer-alt"></i> Owner Dashboard
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>my-properties.php">
+                                        <i class="fas fa-home"></i> My Properties
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>add-property.php">
+                                        <i class="fas fa-plus-circle"></i> Add Property
+                                    </a></li>
+                                    <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>payments.php">
+                                        <i class="fas fa-credit-card"></i> Payments
+                                    </a></li>
+                                <?php endif; ?>
+                                
+                                <!-- COMMON MENU - Everyone -->
+                                <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>messages.php">
+                                    <i class="fas fa-comment-dots"></i> Messages
+                                </a></li>
+                                <li><a class="dropdown-item" href="<?php echo SITE_URL; ?>profile.php">
+                                    <i class="fas fa-user-edit"></i> Profile
+                                </a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item text-danger" href="<?php echo SITE_URL; ?>logout.php">
                                     <i class="fas fa-sign-out-alt"></i> Logout
@@ -458,14 +508,20 @@ $isAdmin = isset($_SESSION['user_role']) && ($_SESSION['user_role'] == 'admin' |
             
             <?php if(isLoggedIn()): ?>
                 <div class="mt-3">
-                    <?php if($isAdmin): ?>
+                    <?php if($is_super_admin): ?>
                         <a href="<?php echo SITE_URL; ?>admin/dashboard.php" class="btn-custom-primary d-block text-center mb-2">
-                            <i class="fas fa-tachometer-alt"></i> Admin Panel
+                            <i class="fas fa-shield-alt"></i> Admin Panel
                         </a>
                     <?php endif; ?>
-                    <a href="<?php echo SITE_URL; ?>dashboard.php" class="btn-custom-outline d-block text-center mb-2">
-                        Dashboard
-                    </a>
+                    <?php if($is_regular_user): ?>
+                        <a href="<?php echo SITE_URL; ?>buyer-dashboard.php" class="btn-custom-outline d-block text-center mb-2">
+                            Dashboard
+                        </a>
+                    <?php else: ?>
+                        <a href="<?php echo SITE_URL; ?>dashboard.php" class="btn-custom-outline d-block text-center mb-2">
+                            Dashboard
+                        </a>
+                    <?php endif; ?>
                     <a href="<?php echo SITE_URL; ?>logout.php" class="btn-custom-outline d-block text-center text-danger">
                         Logout
                     </a>
